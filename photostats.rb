@@ -1,5 +1,4 @@
-#!/usr/bin/ruby
-                                                               
+#!/usr/bin/ruby                                                      
                                                  
 require "mini_exiftool"
 
@@ -14,8 +13,8 @@ def showExif(path = ".")
   counter['tagged'] = 0
   counter['nottagged'] = 0
 
-  File.open("photostats.txt", 'w')
-  File.open("photostats.txt", 'a') {|x| x.write("Tagged; All; Model; Year; Month; Size; Type\n") }
+  File.open("photostats.csv", 'w')
+  File.open("photostats.csv", 'a') {|x| x.write("Tagged; All; Model; Year; Month; Size; Type\n") }
 
   images.each do|f|  
 
@@ -23,7 +22,6 @@ def showExif(path = ".")
    
      if photo.error.nil? && !photo['model'].nil?
        puts "<"
-#       output = "Tagged; All; Model; Year; Month; Size; Type\n"                     
        print "[#{counter['tagged']}] \t [#{counter['all']}]" 
        output = "#{counter['tagged']};#{counter['all']};"
        print "\t[Model]: #{photo['model']}"
@@ -43,33 +41,15 @@ def showExif(path = ".")
        output << "#{pixels};"
        print "\t[Type]: #{photo['mimetype'].split('/')[1]}"
        output << "#{photo['mimetype'].split('/')[1]};\n"             
-       File.open("photostats.txt", 'a') {|x| x.write("#{output}") }  
+       File.open("photostats.csv", 'a') {|x| x.write("#{output}") }  
        counter['tagged'] += 1                 
      else  
-  #    model = EXIFR::JPEG.new(f).model.to_s
-  #    date = EXIFR::JPEG.new(f).date_time_original
-  #    if !model.empty? then
-  #      output = "#{counter['gapless']};#{counter['tagged']};#{model};#{date};#{f}\n"
-  #    File.open("exifresult.txt", 'a') {|f| f.write("#{output}") }
-  #       puts "\t=>#{output}"  
-  #       puts "\t=>done"
-  #     result [f] = model, date
-  #      counter['tagged'] += 1 
         counter['nottagged'] +=1                                   
      end                                                           
   counter['all'] += 1
   end                                             
-
-  puts "\nAll: #{counter['all']} (Tagged: #{counter['tagged']} | Not Tagged: #{counter['nottagged']})"
-  
-  
-  result.sort.each { |i| print i, "\n"} 
-   
-
-  
-  
+  puts "\nAll: #{counter['all']} (Tagged: #{counter['tagged']} | Not Tagged: #{counter['nottagged']})"  
+  result.sort.each { |i| print i, "\n"}                                                              
 end                                        
 
-
 showExif
-
